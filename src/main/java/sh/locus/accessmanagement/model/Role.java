@@ -20,4 +20,9 @@ public class Role {
     public Role(String name) {
         this.name = name;
     }
+
+    public Role(String name, List<ResourcePermission> resourcePermissionList) {
+        this.name = name;
+        this.resourcePermissionList = resourcePermissionList;
+    }
 }

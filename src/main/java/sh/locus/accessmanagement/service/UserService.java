@@ -1,5 +1,6 @@
 package sh.locus.accessmanagement.service;
 
+import sh.locus.accessmanagement.model.ResourcePermission;
 import sh.locus.accessmanagement.model.Role;
 import sh.locus.accessmanagement.model.User;
 
@@ -14,4 +15,6 @@ public interface UserService {
     void addRole(User user, Role role);
 
     void removeRole(User user, Role role);
+
+    boolean hasAccess(User user, ResourcePermission permission);
 }

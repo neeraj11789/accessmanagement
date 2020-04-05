@@ -73,7 +73,7 @@ public class MemoryRoleService implements RoleService {
 
         if(!permissionExists)
             throw new IllegalArgumentException("Permission Doesn't Exist");
-        System.out.println("List of Permissions Before Removing: " + existingPermissions);
+        System.out.println("List of Permissions After Removing: " + existingPermissions);
     }
 
     @Override
