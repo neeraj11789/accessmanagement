@@ -86,6 +86,7 @@ public class MemoryUserService implements UserService {
                 iterator.remove();
             }
         }
+
         if(!roleExists)
             throw new IllegalArgumentException("Role Doesn't Exist");
         System.out.println("List of Permissions After Removing: " + existingRoles);
@@ -93,6 +94,27 @@ public class MemoryUserService implements UserService {
 
     @Override
     public boolean hasAccess(User user, ResourcePermission permission) {
+        requireNonNull(user, "User cannot be empty");
+        requireNonNull(permission, "Permission cannot be empty");
+
+        if(users.get(user.getName())==null)
+            throw new IllegalArgumentException("User Doesn't Exist");
+
+        List<Role> userRoles = user.getRoles();
+
+        Iterator<Role> iterator = userRoles.iterator();
+        while (iterator.hasNext()){
+            Role current = iterator.next();
+            if(current.getResourcePermissionList().size() > 0){
+                Iterator<ResourcePermission> resourcePermissionIterator = current.getResourcePermissionList().iterator();
+                while (resourcePermissionIterator.hasNext()){
+                    ResourcePermission resourcePermission = resourcePermissionIterator.next();
+                    if(permission == resourcePermission){
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 }
