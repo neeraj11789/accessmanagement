@@ -2,13 +2,12 @@ package sh.locus.accessmanagement.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import java.util.List;
 
-public class ResourceAccess {
+public class ResourcePermission {
 
     @Getter @Setter
     private Resource resource;
 
     @Getter @Setter
-    private List<ActionType> actionTypes;
+    private ActionType actionType;
 }
