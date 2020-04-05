@@ -6,6 +6,7 @@ import sh.locus.accessmanagement.model.Resource;
 import sh.locus.accessmanagement.service.ResourceService;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class MemoryResourceServiceTest {
 
@@ -22,13 +23,14 @@ class MemoryResourceServiceTest {
         assertNull( resourceName + " should not exist", service.findByName(resourceName));
         Resource resource = new Resource(resourceName);
         service.addResource(resource);
-        assertEquals("Repo should be created now", resource, service.findByName(resourceName));
+        assertEquals("Resource should be created now", resource, service.findByName(resourceName));
     }
 
     @Test
     void should_throw_exception_when_creating_empty_object(){
         try{
             service.addResource(null);
+            fail("Failed as could not catch Exception");
         }catch (Exception e){
             assertTrue(e instanceof NullPointerException);
             assertEquals(e.getMessage(), "Resource Cannot be Empty");
@@ -42,6 +44,7 @@ class MemoryResourceServiceTest {
         service.addResource(resource);
         try {
             service.addResource(resource);
+            fail("Failed as could not catch Exception");
         }catch (Exception e){
             assertTrue(e instanceof IllegalArgumentException);
             assertEquals(e.getMessage(), "Resource Already Exists");
@@ -56,6 +59,7 @@ class MemoryResourceServiceTest {
         Resource resource = new Resource(resourceName);
         try {
             service.deleteResource(resource);
+            fail("Failed as could not catch Exception");
         }catch (Exception e){
             assertTrue(e instanceof NullPointerException);
             assertEquals(e.getMessage(), "No more resources to delete");
@@ -77,6 +81,7 @@ class MemoryResourceServiceTest {
     void should_throw_excepting_when_passing_null_object(){
         try{
             service.deleteResource(null);
+            fail("Failed as could not catch Exception");
         }catch (Exception e){
             assertTrue(e instanceof NullPointerException);
             assertEquals(e.getMessage(), "Resource Cannot be Empty");
