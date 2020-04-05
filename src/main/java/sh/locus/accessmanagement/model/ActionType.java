@@ -2,9 +2,9 @@ package sh.locus.accessmanagement.model;
 
 public enum ActionType {
 
-    WRITE(0, "create"),
-    READ(1, "sell"),
-    DELETE(2, "Disabled");
+    WRITE(0, "write"),
+    READ(1, "read"),
+    DELETE(2, "delete");
 
     private final int id;
     private final String name;
