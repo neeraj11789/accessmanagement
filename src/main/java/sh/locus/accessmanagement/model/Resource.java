@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@NoArgsConstructor
 public class Resource {
 
     /**
