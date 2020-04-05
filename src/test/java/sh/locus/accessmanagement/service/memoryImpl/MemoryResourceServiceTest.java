@@ -1,18 +1,13 @@
 package sh.locus.accessmanagement.service.memoryImpl;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
 import sh.locus.accessmanagement.model.Resource;
 import sh.locus.accessmanagement.service.ResourceService;
 
 import static org.junit.Assert.*;
 
 class MemoryResourceServiceTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     private ResourceService service;
 
