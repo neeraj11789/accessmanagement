@@ -11,5 +11,5 @@ public class Role {
     private String name;
 
     @Getter @Setter
-    private List<ResourcePermission> resourceActionList;
+    private List<ResourcePermission> resourcePermissionList;
 }

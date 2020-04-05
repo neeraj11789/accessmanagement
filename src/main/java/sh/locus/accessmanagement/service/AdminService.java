@@ -1,16 +1,13 @@
 package sh.locus.accessmanagement.service;
 
-import sh.locus.accessmanagement.model.ActionType;
-import sh.locus.accessmanagement.model.Resource;
 import sh.locus.accessmanagement.model.ResourcePermission;
-
-import java.util.List;
+import sh.locus.accessmanagement.model.Role;
 
 public interface AdminService {
-    void addResourceAction(Resource resource, ActionType actionType);
-    void removeResourceAction(Resource resource, ActionType actionType);
+    void addRole(String role);
+    void addPermission(Role role, ResourcePermission permission);
+    void revokePermission(Role role, ResourcePermission permission);
 
-    void addRole(String name, List<ResourcePermission> permissions);
-    void remokePermissionFromRole(String role, ResourcePermission permission);
-    void deleteRole(String role);
+    void findRoleByName(String role);
+    void removeRole(Role role);
 }
