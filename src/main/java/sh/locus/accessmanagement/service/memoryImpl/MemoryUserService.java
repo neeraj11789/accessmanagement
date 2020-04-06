@@ -110,11 +110,13 @@ public class MemoryUserService implements UserService {
                 while (resourcePermissionIterator.hasNext()){
                     ResourcePermission resourcePermission = resourcePermissionIterator.next();
                     if(permission == resourcePermission){
+                        System.out.println("User " + user.getName() + " has access to the resourcePermission " + permission);
                         return true;
                     }
                 }
             }
         }
+        System.out.println("User " + user.getName() + " DOES NOT have to the resourcePermission " + permission);
         return false;
     }
 
