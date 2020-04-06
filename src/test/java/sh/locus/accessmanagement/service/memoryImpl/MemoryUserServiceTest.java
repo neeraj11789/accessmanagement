@@ -15,38 +15,37 @@ class MemoryUserServiceTest {
      */
     private UserService service;
 
+    // Creating resources
     private final Resource PLATFORM_TEAM_REPO = new Resource("platform-team-repo");
     private final Resource CORE_TEAM_REPO = new Resource("content-team-repo");
     private final Resource UC_TEAM_REPO = new Resource("uc-team-repo");
 
+    // Adding Resource Permissions
     private final ResourcePermission PLATFORM_TEAM_REPO_READ = new ResourcePermission(PLATFORM_TEAM_REPO, ActionType.READ);
     private final ResourcePermission PLATFORM_TEAM_REPO_WRITE = new ResourcePermission(PLATFORM_TEAM_REPO, ActionType.WRITE);
     private final ResourcePermission PLATFORM_TEAM_REPO_DELETE = new ResourcePermission(PLATFORM_TEAM_REPO, ActionType.DELETE);
-
     private final ResourcePermission CORE_TEAM_REPO_READ = new ResourcePermission(CORE_TEAM_REPO, ActionType.READ);
     private final ResourcePermission CORE_TEAM_REPO_WRITE = new ResourcePermission(CORE_TEAM_REPO, ActionType.WRITE);
     private final ResourcePermission CORE_TEAM_REPO_DELETE = new ResourcePermission(CORE_TEAM_REPO, ActionType.DELETE);
-
     private final ResourcePermission UC_TEAM_REPO_READ = new ResourcePermission(UC_TEAM_REPO, ActionType.READ);
     private final ResourcePermission UC_TEAM_REPO_WRITE = new ResourcePermission(UC_TEAM_REPO, ActionType.WRITE);
     private final ResourcePermission UC_TEAM_REPO_DELETE = new ResourcePermission(UC_TEAM_REPO, ActionType.DELETE);
 
-    // All permissions
+    // Role with permissions
     private final Role ADMIN = new Role("Admin", List.of(PLATFORM_TEAM_REPO_DELETE, PLATFORM_TEAM_REPO_READ,
             PLATFORM_TEAM_REPO_WRITE, CORE_TEAM_REPO_DELETE, CORE_TEAM_REPO_READ, CORE_TEAM_REPO_WRITE, UC_TEAM_REPO_DELETE,
             UC_TEAM_REPO_READ, UC_TEAM_REPO_WRITE));
 
-    // Only read permission
+    // Role with Only read permission
     private final Role MANAGER = new Role("Manager", List.of(PLATFORM_TEAM_REPO_READ, UC_TEAM_REPO_READ, CORE_TEAM_REPO_READ));
 
-    // Only Write permission
+    // Role with Only Write permission
     private final Role DEVELOPER = new Role("Developer", List.of(PLATFORM_TEAM_REPO_WRITE, CORE_TEAM_REPO_WRITE,
             UC_TEAM_REPO_WRITE));
 
+    // Adding users
     private final User alex = new User("alex");
-
     private final User bob = new User("bob");
-
     private final User charlie = new User("charlie");
 
     @BeforeEach
