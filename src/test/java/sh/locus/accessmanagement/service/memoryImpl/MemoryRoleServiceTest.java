@@ -21,7 +21,6 @@ class MemoryRoleServiceTest {
     private final Resource PLATFORM_TEAM_REPO = new Resource("platform-team-repo");
     private final Resource CORE_TEAM_REPO = new Resource("content-team-repo");
     private final Resource UC_TEAM_REPO = new Resource("uc-team-repo");
-//    private final Resource ANALYTICS_TEAM_REPO = new Resource("analytics-team-repo");
 
     private final ResourcePermission PLATFORM_TEAM_REPO_READ = new ResourcePermission(PLATFORM_TEAM_REPO, ActionType.READ);
     private final ResourcePermission PLATFORM_TEAM_REPO_WRITE = new ResourcePermission(PLATFORM_TEAM_REPO, ActionType.WRITE);
