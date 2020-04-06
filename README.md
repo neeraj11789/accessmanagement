@@ -6,7 +6,7 @@ Role Based Access Control:
 * ACTION TYPE defines the access level(Ex: READ, WRITE, DELETE)
 * Access to resources for users are controlled strictly by the role. One user can have multiple roles. Given a user, action type and resource system should be able to tell whether user has access or not.
 
-## Important Role regarding the application
+## Notes regarding the application
 * Using SpringBoot Application here just for creating Services. We are currently not using any dependency injection. Have used Lombok extensively.
 * Using JUNIT rather than command line application to test the flow
 * Added major test cases - for time constraint. More test cases can be added
