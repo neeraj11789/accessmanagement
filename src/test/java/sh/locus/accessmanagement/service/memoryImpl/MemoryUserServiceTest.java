@@ -7,10 +7,11 @@ import org.junit.jupiter.api.Test;
 import sh.locus.accessmanagement.model.*;
 import sh.locus.accessmanagement.service.UserService;
 
+import javax.validation.constraints.Null;
 import java.util.Arrays;
+import java.util.Iterator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 class MemoryUserServiceTest {
 
@@ -77,6 +78,63 @@ class MemoryUserServiceTest {
 
     @Test
     void should_pass_add_role_if_user_exists_and_new_role(){
+        service.add(alex);
+        service.addRole(alex, ADMIN);
+        java.util.List<Role> userRoles = service.findByName(alex.getName()).getRoles();
+        assertEquals(userRoles.get(0), ADMIN);
+    }
 
+    @Test
+    void should_pass_add_multiple_roles_if_user_exists_and_new_role(){
+        service.add(alex);
+        service.addRole(alex, ADMIN);
+        service.addRole(alex, DEVELOPER);
+        java.util.List<Role> userRoles = service.findByName(alex.getName()).getRoles();
+        assertEquals(userRoles.size(), 2);
+    }
+
+    @Test
+    void should_fail_add_role_if_user_exists_and_role_exists_as_well(){
+        service.add(alex);
+        service.addRole(alex, ADMIN);
+        try {
+            service.addRole(alex, ADMIN);
+            fail();
+        }catch (Exception e){
+            assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(e.getMessage(), "Role Already Exists");
+        }
+    }
+
+    @Test
+    void should_pass_remove_role_if_user_exists_and_role_exists(){
+        service.add(alex);
+        service.addRole(alex, ADMIN);
+        service.removeRole(alex, ADMIN);
+        assertEquals(service.findByName(alex.getName()).getRoles().size(), 0);
+    }
+
+    @Test
+    void should_fail_remove_role_if_user_exists_and_has_none_role(){
+        service.add(alex);
+        try {
+            service.removeRole(alex, ADMIN);
+            fail();
+        }catch (Exception e){
+            assertTrue(e instanceof NullPointerException);
+        }
+    }
+
+    @Test
+    void should_fail_remove_role_if_user_exists_and_role_doesnot_exists(){
+        service.add(alex);
+        service.addRole(alex, DEVELOPER);
+        try {
+            service.removeRole(alex, ADMIN);
+            fail();
+        }catch (Exception e){
+            assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(e.getMessage(), "Role Doesn't Exist");
+        }
     }
 }

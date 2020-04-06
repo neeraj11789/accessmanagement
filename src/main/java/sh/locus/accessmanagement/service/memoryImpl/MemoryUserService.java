@@ -117,4 +117,10 @@ public class MemoryUserService implements UserService {
         }
         return false;
     }
+
+    @Override
+    public List<Role> userRoles(User user) {
+        requireNonNull(user, "User cannot be empty");
+        return user.getRoles();
+    }
 }
