@@ -25,3 +25,13 @@ public interface UserService {
     boolean hasAccess(User user, ResourcePermission permission);
 }
 ```
+
+## Bug Fix Updates
+* Modified the hasAccess method signature to accept the resource and actionType along with the user
+* ** There was a bug that even if the resouce is deleted, the method might return true ** The bug has been fixed by adding a private method which checks that the resouce must exist.
+* ** Code Modifications **
+* * Injected the ResourceService in the MemoryUserService class
+  * method signature modified as mentioned
+  * OverRide **equals() & hashCode() of ResourcePermission class** since now are creating new instance and we no longer need reference check.
+  * method requireExists() added in MemoryUserService class
+  * test case added **should_fail_when_accessing_non_existing_resource()**
