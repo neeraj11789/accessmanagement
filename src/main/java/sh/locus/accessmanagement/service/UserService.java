@@ -1,8 +1,6 @@
 package sh.locus.accessmanagement.service;
 
-import sh.locus.accessmanagement.model.ResourcePermission;
-import sh.locus.accessmanagement.model.Role;
-import sh.locus.accessmanagement.model.User;
+import sh.locus.accessmanagement.model.*;
 
 import java.util.List;
 
@@ -18,7 +16,7 @@ public interface UserService {
 
     void removeRole(User user, Role role);
 
-    boolean hasAccess(User user, ResourcePermission permission);
+    boolean hasAccess(User user, Resource resource, ActionType action);
 
     List<Role> userRoles(User user);
 }

@@ -1,10 +1,11 @@
 package sh.locus.accessmanagement.service.memoryImpl;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import sh.locus.accessmanagement.model.ResourcePermission;
-import sh.locus.accessmanagement.model.Role;
-import sh.locus.accessmanagement.model.User;
+import sh.locus.accessmanagement.model.*;
+import sh.locus.accessmanagement.service.ResourceService;
 import sh.locus.accessmanagement.service.UserService;
 
 import java.util.*;
@@ -13,10 +14,18 @@ import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MemoryUserService implements UserService {
 
     private final Map<String, User> users = new HashMap<>();
 
+    @NonNull
+    private ResourceService resourceService;
+
+    /**
+     * Add User
+     * @param user
+     */
     @Override
     public void add(User user) {
         requireNonNull(user, "User Cannot be Empty");
@@ -26,6 +35,10 @@ public class MemoryUserService implements UserService {
         log.info("User Created: " + user);
     }
 
+    /**
+     * Delete User
+     * @param user
+     */
     @Override
     public void delete(User user) {
         requireNonNull(users, "User Cannot be Empty");
@@ -34,12 +47,22 @@ public class MemoryUserService implements UserService {
         users.remove(user.getName());
     }
 
+    /**
+     * Find user by name
+     * @param name
+     * @return
+     */
     @Override
     public User findByName(String name) {
         requireNonNull(name, "Name Cannot be Empty");
         return users.get(name);
     }
 
+    /**
+     * Add User Role
+     * @param user
+     * @param role
+     */
     @Override
     public void addRole(User user, Role role) {
         requireNonNull(role, "Role cannot be empty");
@@ -66,6 +89,11 @@ public class MemoryUserService implements UserService {
         System.out.println("Role added to the User: " + role);
     }
 
+    /**
+     * Remove Role of the user
+     * @param user
+     * @param role
+     */
     @Override
     public void removeRole(User user, Role role) {
         requireNonNull(role, "Role cannot be empty");
@@ -92,14 +120,19 @@ public class MemoryUserService implements UserService {
         System.out.println("List of Permissions After Removing: " + existingRoles);
     }
 
+    /**
+     * Check if the user has access to a resource and action
+     * @param user
+     * @param resource
+     * @param action
+     * @return
+     */
     @Override
-    public boolean hasAccess(User user, ResourcePermission permission) {
-        requireNonNull(user, "User cannot be empty");
-        requireNonNull(permission, "Permission cannot be empty");
+    public boolean hasAccess(User user, Resource resource, ActionType action) {
+        requireExists(user);
+        requireExists(resource);
 
-        if(users.get(user.getName())==null)
-            throw new IllegalArgumentException("User Doesn't Exist");
-
+        ResourcePermission permission = new ResourcePermission(resource, action);
         List<Role> userRoles = user.getRoles();
 
         Iterator<Role> iterator = userRoles.iterator();
@@ -109,20 +142,46 @@ public class MemoryUserService implements UserService {
                 Iterator<ResourcePermission> resourcePermissionIterator = current.getResourcePermissionList().iterator();
                 while (resourcePermissionIterator.hasNext()){
                     ResourcePermission resourcePermission = resourcePermissionIterator.next();
-                    if(permission == resourcePermission){
+                    if(permission.equals(resourcePermission)){
                         System.out.println("User " + user.getName() + " has access to the resourcePermission " + permission);
                         return true;
                     }
                 }
             }
         }
+
         System.out.println("User " + user.getName() + " DOES NOT have to the resourcePermission " + permission);
         return false;
     }
 
+    /**
+     * Fetch all the user roles
+     * @param user
+     * @return
+     */
     @Override
     public List<Role> userRoles(User user) {
         requireNonNull(user, "User cannot be empty");
         return user.getRoles();
+    }
+
+    /**
+     * Check if User exists in the system
+     * @param user
+     */
+    private void requireExists(User user){
+        requireNonNull(user, "User cannot be empty");
+        if(users.get(user.getName())==null)
+            throw new IllegalArgumentException("User Doesn't Exist");
+    }
+
+    /**
+     * Check if the Resource exists in the system
+     * @param resource
+     */
+    private void requireExists(Resource resource){
+        requireNonNull(resource, "Resource cannot be null");
+        if(resourceService.findByName(resource.getName())==null)
+            throw new IllegalArgumentException("Resource Doesn't Exist");
     }
 }

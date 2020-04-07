@@ -4,6 +4,7 @@ import com.sun.tools.javac.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sh.locus.accessmanagement.model.*;
+import sh.locus.accessmanagement.service.ResourceService;
 import sh.locus.accessmanagement.service.UserService;
 
 import static org.junit.Assert.*;
@@ -13,11 +14,13 @@ class MemoryUserServiceTest {
     /**
      * @NOTE: Adding only few test cases here for time constraint
      */
-    private UserService service;
+    private UserService userService;
+
+    private ResourceService resourceService;
 
     // Creating resources
     private final Resource PLATFORM_TEAM_REPO = new Resource("platform-team-repo");
-    private final Resource CORE_TEAM_REPO = new Resource("content-team-repo");
+    private final Resource CORE_TEAM_REPO = new Resource("core-team-repo");
     private final Resource UC_TEAM_REPO = new Resource("uc-team-repo");
 
     // Adding Resource Permissions
@@ -50,51 +53,59 @@ class MemoryUserServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new MemoryUserService();
+        resourceService = new MemoryResourceService();
+        userService = new MemoryUserService(resourceService);
+
+        /**
+         * Create Resources
+         */
+        resourceService.addResource(PLATFORM_TEAM_REPO);
+        resourceService.addResource(CORE_TEAM_REPO);
+        resourceService.addResource(UC_TEAM_REPO);
     }
 
     @Test
     void should_pass_when_new_resource_is_created(){
         String userName = "neeraj";
-        assertNull( userName + " should not exist", service.findByName(userName));
+        assertNull( userName + " should not exist", userService.findByName(userName));
         User user = new User(userName);
-        service.add(user);
-        assertEquals("Repo should be created now", user, service.findByName(userName));
+        userService.add(user);
+        assertEquals("Repo should be created now", user, userService.findByName(userName));
     }
 
     @Test
     void should_pass_when_deleting_exising_group(){
         String userName = "neeraj";
         User user = new User(userName);
-        service.add(user);
+        userService.add(user);
 
-        service.delete(user);
-        assertNull( userName + " should not exist", service.findByName(userName));
+        userService.delete(user);
+        assertNull( userName + " should not exist", userService.findByName(userName));
     }
 
     @Test
     void should_pass_add_role_if_user_exists_and_new_role(){
-        service.add(alex);
-        service.addRole(alex, ADMIN);
-        java.util.List<Role> userRoles = service.findByName(alex.getName()).getRoles();
+        userService.add(alex);
+        userService.addRole(alex, ADMIN);
+        java.util.List<Role> userRoles = userService.findByName(alex.getName()).getRoles();
         assertEquals(userRoles.get(0), ADMIN);
     }
 
     @Test
     void should_pass_add_multiple_roles_if_user_exists_and_new_role(){
-        service.add(alex);
-        service.addRole(alex, ADMIN);
-        service.addRole(alex, DEVELOPER);
-        java.util.List<Role> userRoles = service.findByName(alex.getName()).getRoles();
+        userService.add(alex);
+        userService.addRole(alex, ADMIN);
+        userService.addRole(alex, DEVELOPER);
+        java.util.List<Role> userRoles = userService.findByName(alex.getName()).getRoles();
         assertEquals(userRoles.size(), 2);
     }
 
     @Test
     void should_fail_add_role_if_user_exists_and_role_exists_as_well(){
-        service.add(alex);
-        service.addRole(alex, ADMIN);
+        userService.add(alex);
+        userService.addRole(alex, ADMIN);
         try {
-            service.addRole(alex, ADMIN);
+            userService.addRole(alex, ADMIN);
             fail();
         }catch (Exception e){
             assertTrue(e instanceof IllegalArgumentException);
@@ -104,17 +115,17 @@ class MemoryUserServiceTest {
 
     @Test
     void should_pass_remove_role_if_user_exists_and_role_exists(){
-        service.add(alex);
-        service.addRole(alex, ADMIN);
-        service.removeRole(alex, ADMIN);
-        assertEquals(service.findByName(alex.getName()).getRoles().size(), 0);
+        userService.add(alex);
+        userService.addRole(alex, ADMIN);
+        userService.removeRole(alex, ADMIN);
+        assertEquals(userService.findByName(alex.getName()).getRoles().size(), 0);
     }
 
     @Test
     void should_fail_remove_role_if_user_exists_and_has_none_role(){
-        service.add(alex);
+        userService.add(alex);
         try {
-            service.removeRole(alex, ADMIN);
+            userService.removeRole(alex, ADMIN);
             fail();
         }catch (Exception e){
             assertTrue(e instanceof NullPointerException);
@@ -123,10 +134,10 @@ class MemoryUserServiceTest {
 
     @Test
     void should_fail_remove_role_if_user_exists_and_role_doesnot_exists(){
-        service.add(alex);
-        service.addRole(alex, DEVELOPER);
+        userService.add(alex);
+        userService.addRole(alex, DEVELOPER);
         try {
-            service.removeRole(alex, ADMIN);
+            userService.removeRole(alex, ADMIN);
             fail();
         }catch (Exception e){
             assertTrue(e instanceof IllegalArgumentException);
@@ -136,26 +147,42 @@ class MemoryUserServiceTest {
 
     @Test
     void should_pass_when_accessing_permitted_resource_from_user(){
-        service.add(alex);
-        service.addRole(alex, ADMIN);
+        userService.add(alex);
+        userService.addRole(alex, ADMIN);
 
-        assertTrue(service.hasAccess(alex, PLATFORM_TEAM_REPO_READ));
+        assertTrue(userService.hasAccess(alex, PLATFORM_TEAM_REPO, ActionType.READ));
     }
 
     @Test
     void should_fail_when_accessing_unauthorized_resource_from_user(){
-        service.add(bob);
-        service.addRole(bob, DEVELOPER);
+        userService.add(bob);
+        userService.addRole(bob, DEVELOPER);
 
-        assertFalse(service.hasAccess(bob, PLATFORM_TEAM_REPO_DELETE));
+        assertFalse(userService.hasAccess(bob, PLATFORM_TEAM_REPO, ActionType.DELETE));
     }
 
     @Test
     void should_fail_when_user_has_multiple_roles_still_not_the_permission_for_resource(){
-        service.add(charlie);
-        service.addRole(charlie, DEVELOPER);
-        service.addRole(charlie, MANAGER);
+        userService.add(charlie);
+        userService.addRole(charlie, DEVELOPER);
+        userService.addRole(charlie, MANAGER);
 
-        assertFalse(service.hasAccess(charlie, UC_TEAM_REPO_DELETE));
+        assertFalse(userService.hasAccess(charlie, UC_TEAM_REPO, ActionType.DELETE));
+    }
+
+    @Test
+    void should_fail_when_accessing_non_existing_resource(){
+        userService.add(alex);
+        userService.addRole(alex, ADMIN);
+
+        // remove resource
+        resourceService.deleteResource(PLATFORM_TEAM_REPO);
+        try {
+            userService.hasAccess(alex, PLATFORM_TEAM_REPO, ActionType.READ);
+            fail();
+        }catch (Exception e){
+            assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(e.getMessage(), "Resource Doesn't Exist");
+        }
     }
 }
