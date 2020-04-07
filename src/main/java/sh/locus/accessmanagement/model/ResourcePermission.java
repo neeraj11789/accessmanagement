@@ -22,7 +22,10 @@ public class ResourcePermission {
             return false;
 
         ResourcePermission rp = (ResourcePermission) obj;
-        return (rp.getResource() == this.resource && rp.getActionType() == this.actionType);
+        return (rp.getActionType().equals(this.actionType)
+                && rp.getResource().getName().equalsIgnoreCase(((ResourcePermission) obj).getResource().getName())
+                && rp.getResource().getId().equalsIgnoreCase(((ResourcePermission) obj).getResource().getId())
+        );
     }
 
     @Override
