@@ -1,5 +1,6 @@
 package sh.locus.accessmanagement.service.memoryImpl;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sh.locus.accessmanagement.model.ResourcePermission;
 import sh.locus.accessmanagement.model.Role;
@@ -8,9 +9,10 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+@Service
 public class MemoryRoleService implements RoleService {
 
-    private final Map<String, Role> roles = new HashMap<>();
+    private static final Map<String, Role> roles = new HashMap<>();
 
     @Override
     public void addRole(Role role) {

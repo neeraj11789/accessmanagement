@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 @RequiredArgsConstructor
 public class MemoryUserService implements UserService {
 
-    private final Map<String, User> users = new HashMap<>();
+    private static final Map<String, User> users = new HashMap<>();
 
     @NonNull
     private ResourceService resourceService;

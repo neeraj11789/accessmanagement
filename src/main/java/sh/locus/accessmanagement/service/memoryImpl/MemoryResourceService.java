@@ -5,15 +5,15 @@ import org.springframework.stereotype.Service;
 import sh.locus.accessmanagement.model.Resource;
 import sh.locus.accessmanagement.service.ResourceService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Service
 public class MemoryResourceService implements ResourceService {
 
-    private final Map<String, Resource> resources = new HashMap<>();
+    private static final Map<String, Resource> resources = new HashMap<>();
 
     @Override
     public void addResource(Resource resource) {
@@ -36,5 +36,14 @@ public class MemoryResourceService implements ResourceService {
     public Resource findByName(String name) {
         requireNonNull(name, "Name Cannot be Empty");
         return resources.get(name);
+    }
+
+    @Override
+    public List<Resource> getAll(){
+        List<Resource> res = new ArrayList<>();
+        Iterator<Map.Entry<String, Resource>> iterator = resources.entrySet().iterator();
+        while (iterator.hasNext())
+            res.add(iterator.next().getValue());
+        return res;
     }
 }
